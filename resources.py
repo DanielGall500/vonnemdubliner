@@ -46,12 +46,14 @@ def admin():
         return make_response('Could not verify!', 401, \
         {'WWW-Authenticate':'Basic-realm= "Login Required!"'})
 
-    user = User.query.filter_by(username=auth['username']).first()
+    _username = auth.get('username')
+    _password = auth.get('password')
+    user = User.query.filter_by(username=_username).first()
     if not user:
         return make_response('Could not verify user, please sign up.', 401, \
         {'WWW-Authenticate':'Basic-realm= "No user found!"'})
 
-    if check_password_hash(user.password, auth.get('password')):
+    if check_password_hash(user.password, _password):
         token = jwt.encode({'public_id':user.public_id}, \
         app.config['SECRET_KEY'], 'HS256')
         return make_response(jsonify({'token':token}),201)

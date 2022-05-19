@@ -11,8 +11,8 @@ class User(db.Model):
     password = db.Column(db.String(128))
     admin = db.Column(db.Boolean)
 
-    def __repr__():
-        return '<User {}>'.format(username)
+    def __repr__(self):
+        return '<User {}>'.format(self.username)
 
 class Blogpost(db.Model):
     id = db.Column(db.Integer, primary_key=True)

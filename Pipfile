@@ -6,9 +6,9 @@ name = "pypi"
 [packages]
 flask = "*"
 flask-sqlalchemy = "*"
-jwt = "*"
 flask-migrate = "*"
 flask-cors = "*"
+pyjwt = "*"
 
 [dev-packages]
 

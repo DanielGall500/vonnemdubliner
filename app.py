@@ -5,7 +5,9 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = r'sqlite:///C:\Users\Informatik\Documents\proj\vonnemdubliner\repo\blog.db'
+#Configuration settings including secret key
+#Not committed to the repo
+app.config.from_pyfile('config.py')
 
 db = SQLAlchemy(app)
 
