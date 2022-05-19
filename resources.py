@@ -39,9 +39,13 @@ def addpost():
 
     return redirect(url_for('index'))
 
-@app.route('/admin', methods=['POST'])
+@app.route('/admin', methods=['POST', 'GET'])
 def admin():
-    auth = request.get_json()
+    if request.method == 'GET':
+        return render_template('login.html')
+
+    #Otherwise, handle login POST data
+    auth = request.form
     if not auth or not auth.get('username') or not auth.get('password'):
         return make_response('Could not verify!', 401, \
         {'WWW-Authenticate':'Basic-realm= "Login Required!"'})
