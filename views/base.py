@@ -5,6 +5,7 @@ from flask_login import login_required
 from datetime import datetime, timedelta
 from app import app, db
 from models import User, Blogpost
+from views.post_api import get_post, create_post
 
 base = Blueprint('base', __name__, '')
 
@@ -19,7 +20,7 @@ def about():
 
 @base.route('/post/<string:slug>')
 def post(slug):
-    post = Blogpost.query.filter_by(slug=slug).one()
+    post = get_post(slug)
     return render_template('post.html', post=post, post_header_img='home-bg.jpg')
 
 @base.route('/add')
@@ -35,10 +36,7 @@ def addpost():
     author = request.form['author']
     content = request.form['content']
 
-    post = Blogpost(title=title, subtitle=subtitle, slug=slug, author=author, \
-    content=content, date_posted=datetime.now())
-
-    db.session.add(post)
-    db.session.commit()
+    create_post(title=title, subtitle=subtitle, slug=slug, author=author, \
+    content=content)
 
     return redirect(url_for('base.index'))
