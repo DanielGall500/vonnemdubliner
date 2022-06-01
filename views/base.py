@@ -6,28 +6,28 @@ from datetime import datetime, timedelta
 from app import app, db
 from models import User, Blogpost
 
-views = Blueprint('views', __name__, '')
+base = Blueprint('base', __name__, '')
 
-@views.route('/')
+@base.route('/')
 def index():
     posts = Blogpost.query.order_by(Blogpost.date_posted.desc()).all()
     return render_template('index.html', posts=posts)
 
-@views.route('/about')
+@base.route('/about')
 def about():
     return render_template('about.html')
 
-@views.route('/post/<int:post_id>')
+@base.route('/post/<int:post_id>')
 def post(post_id):
     post = Blogpost.query.filter_by(id=post_id).one()
     return render_template('post.html', post=post, post_header_img='home-bg.jpg')
 
-@views.route('/add')
+@base.route('/add')
 @login_required
 def add():
     return render_template('add.html')
 
-@views.route('/addpost', methods=['POST'])
+@base.route('/addpost', methods=['POST'])
 def addpost():
     title = request.form['title']
     subtitle = request.form['subtitle']
