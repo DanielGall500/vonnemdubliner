@@ -1,7 +1,3 @@
-from sqlalchemy.orm import backref
-from flask import request, jsonify, make_response
-from functools import wraps
-import jwt
 from app import db
 from flask_login import UserMixin
 
@@ -17,8 +13,12 @@ class User(db.Model, UserMixin):
 
 class Blogpost(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(50))
-    subtitle = db.Column(db.String(50))
+    title = db.Column(db.String(150))
+    subtitle = db.Column(db.String(100))
+    slug = db.Column(db.String(100), unique=True)
     author = db.Column(db.String(20))
-    date_posted = db.Column(db.DateTime)
+    date_posted = db.Column(db.DateTime, index=True)
     content = db.Column(db.Text)
+
+    def __repr__(self):
+        return '<Post {}>'.format(self.title)
