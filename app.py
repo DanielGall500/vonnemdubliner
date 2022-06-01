@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
+from flask_login import LoginManager
 
 app = Flask(__name__)
 
@@ -18,4 +19,12 @@ def create_tables():
 migrate = Migrate(app, db, render_as_batch=True)
 CORS(app)
 
-import resources
+#Handle the login functionality
+login_manager = LoginManager()
+login_manager.login_view = "auth.admin"
+login_manager.init_app(app)
+
+from models import User
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id))
