@@ -1,5 +1,4 @@
-from app import db
-from resources import User
+from vonnemdubliner.models import User, db
 from werkzeug.security import generate_password_hash
 
 def create_user(username,password,is_admin):

@@ -4,28 +4,28 @@ from flask_login import LoginManager
 from flask_migrate import Migrate
 
 def create_app():
+    app = Flask(__name__, \
+    template_folder='vonnemdubliner/templates', \
+    static_folder='vonnemdubliner/static')
+
     #Config settings include secret key
-    app = Flask(__name__)
     app.config.from_pyfile('config.py')
 
-    from models import db
-
+    from vonnemdubliner.models import db
     migrate = Migrate(app, db, render_as_batch=True)
     db.init_app(app)
-
     CORS(app)
 
-    from views.auth import auth
-    from views.base import base
+    from vonnemdubliner.views.auth import auth
+    from vonnemdubliner.views.base import base
     app.register_blueprint(auth)
     app.register_blueprint(base)
 
-    #Handle the login functionality
     login_manager = LoginManager()
     login_manager.login_view = "auth.admin"
     login_manager.init_app(app)
 
-    from models import User
+    from vonnemdubliner.models import User
     @login_manager.user_loader
     def load_user(id):
         return User.query.get(int(id))

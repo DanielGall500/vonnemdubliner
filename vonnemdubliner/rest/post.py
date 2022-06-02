@@ -3,8 +3,8 @@ Blueprint, request,  make_response, render_template, redirect, url_for, flash
 )
 from datetime import datetime, timedelta
 from flask_login import login_required
-from models import db
-from models import Blogpost
+from vonnemdubliner.models import db
+from vonnemdubliner.models import Blogpost
 
 #GET
 def get_post(slug):

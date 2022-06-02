@@ -3,8 +3,8 @@ Blueprint, request,  make_response, render_template, redirect, url_for, flash
 )
 from flask_login import login_required
 from datetime import datetime, timedelta
-from models import db, User, Blogpost
-from rest.post import get_post, create_post
+from vonnemdubliner.models import db, User, Blogpost
+from vonnemdubliner.rest.post import get_post, create_post
 
 base = Blueprint('base', __name__, '')
 
