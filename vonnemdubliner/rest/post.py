@@ -16,14 +16,10 @@ def get_post(slug):
         raise
 
 #PUT
-def create_post(title, subtitle, slug, author, content):
-    post = Blogpost(title=title, subtitle=subtitle, slug=slug, author=author, \
-    content=content, date_posted=datetime.now())
-
-    db.session.add(post)
+def create_post(blogpost):
+    db.session.add(blogpost)
     db.session.commit()
-
-    return post
+    return blogpost
 
 #DELETE
 def delete_post(slug):
@@ -33,7 +29,6 @@ def delete_post(slug):
     except:
         flash("Post with slug {} not found.".format(slug))
         raise
-    return True
 
 #POST
 def update_post():

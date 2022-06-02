@@ -32,7 +32,7 @@ def admin():
         #return make_response(jsonify({'x-access-token':token}),201)
         flash("Logged In!",category='success')
         login_user(user,remember=True)
-        return redirect(url_for('views.add'))
+        return redirect(url_for('base.add'))
 
     return make_response("Could not verify password!",403,\
     {'WWW-Authenticate': 'Basic-realm= "Wrong Password!"'})
