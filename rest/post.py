@@ -3,13 +3,17 @@ Blueprint, request,  make_response, render_template, redirect, url_for, flash
 )
 from datetime import datetime, timedelta
 from flask_login import login_required
-from app import app, db
-from models import User, Blogpost
+from models import db
+from models import Blogpost
 
 #GET
 def get_post(slug):
-    post = Blogpost.query.filter_by(slug=slug).one()
-    return post
+    try:
+        post = Blogpost.query.filter_by(slug=slug).one()
+        return post
+    except:
+        flash("Post with slug {} not found".format(slug))
+        raise
 
 #PUT
 def create_post(title, subtitle, slug, author, content):

@@ -1,8 +1,5 @@
-from app import app
-from views.auth import auth
-from views.base import base
+from app import create_app
 
 if __name__ == '__main__':
-    app.register_blueprint(auth)
-    app.register_blueprint(base)
+    app = create_app()
     app.run(debug=True)
