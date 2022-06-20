@@ -37,7 +37,7 @@ def admin():
     if check_password_hash(user.password, _password):
         flash("Logged In!",category='success')
         login_user(user,remember=True)
-        return redirect(url_for('base.add'))
+        return redirect(url_for('base.index'))
 
     return make_response("Could not verify password!",403,\
     {'WWW-Authenticate': 'Basic-realm= "Wrong Password!"'})

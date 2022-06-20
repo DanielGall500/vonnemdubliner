@@ -46,7 +46,7 @@ if one is available.
 """
 def update_post(slug, content):
     try:
-        Blogpost.query.filterby(slug=slug).
+        Blogpost.query.filterby(slug=slug).\
         update({'content': content})
         db.session.commit()
     except:
