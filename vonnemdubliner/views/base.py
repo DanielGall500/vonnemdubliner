@@ -4,7 +4,7 @@ Blueprint, request,  make_response, render_template, redirect, url_for, flash
 from flask_login import login_required
 from datetime import datetime, timedelta
 from vonnemdubliner.models import db, User, Blogpost
-from vonnemdubliner.rest.post import get_post, create_post
+from vonnemdubliner.rest.post import get_post, create_post, update_post
 
 base = Blueprint('base', __name__, '')
 
@@ -52,8 +52,33 @@ def add():
     slug = request.form['slug']
     author = request.form['author']
     content = request.form['content']
+    curr_time = datetime.now()
 
-    create_post(title=title, subtitle=subtitle, slug=slug, author=author, \
-    content=content)
+    new_post = Blogpost(title=title, subtitle=subtitle, slug=slug, author=author, \
+    content=content, date_posted=curr_time)
+    create_post(new_post)
 
     return redirect(url_for('base.index'))
+
+"""
+EDIT POST
+Edit a post.
+"""
+@base.route('/edit/<string:slug>', methods=['POST','GET'])
+@login_required
+def edit(slug):
+    post = get_post(slug)
+    id = post.id
+
+    if request.method == 'GET':
+        return render_template('edit.html', post=post)
+
+    #Store the updated post information
+    edit_form = request.form
+    post.title = edit_form['title']
+    post.subtitle = edit_form['subtitle']
+    post.slug = edit_form['slug']
+    post.content = edit_form['content']
+
+    update_post(id, post)
+    return redirect(url_for('base.post',slug=post.slug))

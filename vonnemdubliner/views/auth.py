@@ -51,4 +51,4 @@ Logs the current user out and returns to home page.
 def logout():
     logout_user()
     flash("Logged Out.")
-    return redirect(url_for('views.index'))
+    return redirect(url_for('base.index'))

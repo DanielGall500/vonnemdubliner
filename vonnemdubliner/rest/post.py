@@ -44,11 +44,9 @@ UPDATE
 Filters by the slug and updates the content of the post
 if one is available.
 """
-def update_post(slug, content):
+def update_post(id, post):
     try:
-        Blogpost.query.filterby(slug=slug).\
-        update({'content': content})
+        db.session.add(post)
         db.session.commit()
     except:
-        flash("Post with slug {} not found.".format(slug))
         raise
