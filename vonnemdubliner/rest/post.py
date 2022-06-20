@@ -6,7 +6,10 @@ from flask_login import login_required
 from vonnemdubliner.models import db
 from vonnemdubliner.models import Blogpost
 
-#GET
+"""
+GET
+Filters by the slug and returns a post if available.
+"""
 def get_post(slug):
     try:
         post = Blogpost.query.filter_by(slug=slug).one()
@@ -15,13 +18,19 @@ def get_post(slug):
         flash("Post with slug {} not found".format(slug))
         raise
 
-#PUT
+"""
+CREATE
+Adds & commits the HTML of a post to the database.
+"""
 def create_post(blogpost):
     db.session.add(blogpost)
     db.session.commit()
     return blogpost
 
-#DELETE
+"""
+DELETE
+Filters by the slug and deletes a post with that slug if available.
+"""
 def delete_post(slug):
     try:
         Blogpost.query.filterby(slug=slug).delete()
@@ -30,6 +39,16 @@ def delete_post(slug):
         flash("Post with slug {} not found.".format(slug))
         raise
 
-#POST
-def update_post():
-    return None
+"""
+UPDATE
+Filters by the slug and updates the content of the post
+if one is available.
+"""
+def update_post(slug, content):
+    try:
+        Blogpost.query.filterby(slug=slug).
+        update({'content': content})
+        db.session.commit()
+    except:
+        flash("Post with slug {} not found.".format(slug))
+        raise
