@@ -5,6 +5,10 @@ from flask_login import login_required
 from datetime import datetime, timedelta
 from vonnemdubliner.models import db, User, Blogpost
 from vonnemdubliner.rest.post import get_post, create_post, update_post
+from werkzeug.utils import secure_filename
+from app import UPLOAD_FOLDER
+import pathlib
+import os
 
 base = Blueprint('base', __name__, '')
 
@@ -36,7 +40,8 @@ def post(slug):
 
 """
 ADD POST
-Bring user to add post page.
+Bring user to add post page to fill out new post form.
+Can add main content and images.
 Must be logged in as admin user.
 """
 @base.route('/add', methods=['POST','GET'])
@@ -57,6 +62,15 @@ def add():
     new_post = Blogpost(title=title, subtitle=subtitle, slug=slug, author=author, \
     content=content, date_posted=curr_time)
     create_post(new_post)
+
+    if "images" in request.files:
+        uploaded_files = request.files.getlist('images')
+        post_id = str(get_post(slug).id)
+        print(post_id)
+        pathlib.Path(UPLOAD_FOLDER, post_id).mkdir(exist_ok=True)
+        for file in uploaded_files:
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(UPLOAD_FOLDER, post_id, filename))
 
     return redirect(url_for('base.index'))
 

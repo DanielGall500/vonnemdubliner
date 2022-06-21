@@ -21,7 +21,7 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
-          <form name="addForm" id="addForm" method="POST" action="{{ url_for('base.add') }}" novalidate>
+          <form name="addForm" id="addForm" method="POST" enctype="multipart/form-data" action="{{ url_for('base.add') }}" novalidate>
             <div class="control-group">
               <div class="form-group floating-label-form-group controls">
                 <label>Title</label>
@@ -48,6 +48,12 @@
                 <label>Author</label>
                 <input type="text" class="form-control" placeholder="Author" name="author" id="author" required data-validation-required-message="Please enter your phone number.">
                 <p class="help-block text-danger"></p>
+              </div>
+            </div>
+            <div class="control-group">
+              <div class="form-group col-xs-12 floating-label-form-group controls">
+                <label>Images</label>
+                <input type="file" name="images" id="images" multiple></input>
               </div>
             </div>
             <div class="control-group">

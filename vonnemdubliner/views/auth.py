@@ -1,10 +1,14 @@
 from flask import (
 Blueprint, request, jsonify, make_response, render_template, redirect, url_for, flash
 )
-from werkzeug.security import generate_password_hash, check_password_hash
-import uuid
-from vonnemdubliner.models import db, User, Blogpost
 from flask_login import login_user, logout_user, login_required, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
+from vonnemdubliner.models import db, User, Blogpost
+from werkzeug.utils import secure_filename
+from app import UPLOAD_FOLDER
+import pathlib
+import uuid
+import os
 
 auth = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -51,4 +55,22 @@ Logs the current user out and returns to home page.
 def logout():
     logout_user()
     flash("Logged Out.")
+    return redirect(url_for('base.index'))
+
+"""
+UPLOAD IMAGES
+Allows an admin to upload images for use in a post.
+"""
+@auth.route("/uploads", methods=["GET","POST"])
+@login_required
+def uploads():
+    if request.method == "POST" and "photos" in request.files:
+        uploaded_files = request.files.getlist('photos')
+        post_id = request.form['post_id']
+        filename = []
+        pathlib.Path(UPLOAD_FOLDER, post_id).mkdir(exist_ok=True)
+        for file in uploaded_files:
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(UPLOAD_FOLDER,post_id,filename))
+        return post_id
     return redirect(url_for('base.index'))
