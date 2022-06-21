@@ -33,6 +33,14 @@
             </a>
             <p class="post-meta">{{post.date_posted.strftime('%B %d, %Y') }}</p>
           </div>
+            {% if current_user.is_authenticated %}
+            <button type="button" class="btn-sm" !important>
+              <a class="nav-link" href="{{ url_for('base.edit', slug=post.slug) }}">Edit</a>
+            </button>
+            <button type="button" class="btn-sm" !important>
+              <a class="nav-link" href="{{ url_for('base.delete', slug=post.slug) }}">Delete</a>
+            </button>
+            {% endif %}
           {% endfor %}
           <hr>
         </div>
