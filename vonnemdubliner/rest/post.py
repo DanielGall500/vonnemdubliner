@@ -5,6 +5,9 @@ from datetime import datetime, timedelta
 from flask_login import login_required
 from vonnemdubliner.models import db
 from vonnemdubliner.models import Blogpost
+from app import UPLOAD_FOLDER
+import shutil
+import pathlib
 
 """
 GET
@@ -33,8 +36,16 @@ Filters by the slug and deletes a post with that slug if available.
 """
 def delete_post(slug):
     try:
-        Blogpost.query.filter_by(slug=slug).delete()
+        #Load post data
+        id = str(get_post(slug).id)
+
+        #Delete post from SQL database
+        Blogpost.query.filter_by(id=id).delete()
         db.session.commit()
+
+        #Delete all files associated with the post
+        images_path = pathlib.Path(UPLOAD_FOLDER, id)
+        shutil.rmtree(images_path)
     except:
         flash("Post with slug {} not found.".format(slug))
         raise
