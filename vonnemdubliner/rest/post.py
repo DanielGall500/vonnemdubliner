@@ -33,7 +33,7 @@ Filters by the slug and deletes a post with that slug if available.
 """
 def delete_post(slug):
     try:
-        Blogpost.query.filterby(slug=slug).delete()
+        Blogpost.query.filter_by(slug=slug).delete()
         db.session.commit()
     except:
         flash("Post with slug {} not found.".format(slug))

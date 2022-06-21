@@ -1,10 +1,12 @@
 from flask import (
-Blueprint, request,  make_response, render_template, redirect, url_for, flash
+    Blueprint, request,  make_response, render_template, redirect, url_for, flash
+)
+from vonnemdubliner.rest.post import (
+    get_post, create_post, delete_post, update_post
 )
 from flask_login import login_required
 from datetime import datetime, timedelta
 from vonnemdubliner.models import db, User, Blogpost
-from vonnemdubliner.rest.post import get_post, create_post, update_post
 from werkzeug.utils import secure_filename
 from app import UPLOAD_FOLDER
 import pathlib
@@ -96,3 +98,22 @@ def edit(slug):
 
     update_post(id, post)
     return redirect(url_for('base.post',slug=post.slug))
+
+"""
+DELETE POST
+Delete a post from the SQL database.
+"""
+@base.route('/delete/<string:slug>', methods=["POST","GET"])
+@login_required
+def delete(slug):
+    post = get_post(slug)
+
+    if request.method == 'GET':
+        return render_template('delete.html', post=post)
+
+    delete_form = request.form
+    delete_post_confirmed = (delete_form['radio-toggle'] == "toggle-yes")
+    print(delete_post_confirmed)
+    if delete_post_confirmed:
+        delete_post(slug)
+    return redirect(url_for('base.index'))

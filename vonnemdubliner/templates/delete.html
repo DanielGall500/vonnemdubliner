@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block header %}
+    <!-- Page Header -->
+    <header class="masthead" style="background-image: url('{{ url_for('static', filename='home-bg.jpg') }}')">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="page-heading">
+              <h1>Delete Post</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+{% endblock %}
+
+{% block body %}
+    <!-- Main Content -->
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <h3>{{post.slug}}: Are you sure you wish to delete this post?</h3><br>
+          <form name="addForm" id="addForm" method="POST" action="{{ url_for('base.delete',slug=post.slug) }}" novalidate>
+              <div class="">
+                <input type="radio" name="radio-toggle" id="toggle-yes" value="toggle-yes" checked>
+                <label for="toggle-yes">Yes, delete it!</label><br>
+                <input type="radio" name="radio-toggle" id="toggle-no" value="toggle-no">
+                <label for="toggle-no">No, keep the post.</label>
+              </div>
+            <br>
+            <div id="success"></div>
+            <div class="form-group">
+              <button type="submit" class="btn btn-secondary" id="sendMessageButton">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <hr>
+{% endblock %}

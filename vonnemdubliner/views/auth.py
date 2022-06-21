@@ -56,21 +56,3 @@ def logout():
     logout_user()
     flash("Logged Out.")
     return redirect(url_for('base.index'))
-
-"""
-UPLOAD IMAGES
-Allows an admin to upload images for use in a post.
-"""
-@auth.route("/uploads", methods=["GET","POST"])
-@login_required
-def uploads():
-    if request.method == "POST" and "photos" in request.files:
-        uploaded_files = request.files.getlist('photos')
-        post_id = request.form['post_id']
-        filename = []
-        pathlib.Path(UPLOAD_FOLDER, post_id).mkdir(exist_ok=True)
-        for file in uploaded_files:
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(UPLOAD_FOLDER,post_id,filename))
-        return post_id
-    return redirect(url_for('base.index'))
