@@ -2,14 +2,24 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_cors import CORS
 from flask_login import LoginManager
 from flask_migrate import Migrate
+from flask_ckeditor import CKEditor
+
+TEMPLATE_FOLDER = 'vonnemdubliner/templates'
+STATIC_FOLDER = 'vonnemdubliner/static'
+UPLOAD_FOLDER = STATIC_FOLDER + '/uploads'
+
+ckeditor = CKEditor()
 
 def create_app():
     app = Flask(__name__, \
-    template_folder='vonnemdubliner/templates', \
-    static_folder='vonnemdubliner/static')
+    template_folder=TEMPLATE_FOLDER, \
+    static_folder=STATIC_FOLDER)
+
+    ckeditor.init_app(app)
 
     #Config settings include secret key
     app.config.from_pyfile('config.py')
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
     from vonnemdubliner.models import db
     migrate = Migrate(app, db, render_as_batch=True)
@@ -26,6 +36,8 @@ def create_app():
     login_manager.init_app(app)
 
     from vonnemdubliner.models import User
+
+    #Handle the loading of the current logged-in user
     @login_manager.user_loader
     def load_user(id):
         return User.query.get(int(id))

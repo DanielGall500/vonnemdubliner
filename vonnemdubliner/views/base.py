@@ -4,9 +4,10 @@ from flask import (
 from vonnemdubliner.rest.post import (
     get_post, create_post, delete_post, update_post
 )
+from vonnemdubliner.models import db, User, Blogpost
+from vonnemdubliner.webforms import BlogpostForm
 from flask_login import login_required
 from datetime import datetime, timedelta
-from vonnemdubliner.models import db, User, Blogpost
 from werkzeug.utils import secure_filename
 from app import UPLOAD_FOLDER
 import pathlib
@@ -37,8 +38,12 @@ Display a post when given a slug.
 """
 @base.route('/post/<string:slug>')
 def post(slug):
-    post = get_post(slug)
-    return render_template('post.html', post=post, post_header_img='home-bg.jpg')
+    post = get_post(slug=slug)
+    return render_template(
+        'post.html',
+        post=post,
+        post_header_img='home-bg.jpg'
+    )
 
 """
 ADD POST
@@ -49,32 +54,39 @@ Must be logged in as admin user.
 @base.route('/add', methods=['POST','GET'])
 @login_required
 def add():
-    #If no post has been submitted, load the -add post- form
-    if request.method == 'GET':
-        return render_template('add.html')
+    blogpost_form = BlogpostForm()
 
-    #If a post has been submitted, add to the database and redirect
-    title = request.form['title']
-    subtitle = request.form['subtitle']
-    slug = request.form['slug']
-    author = request.form['author']
-    content = request.form['content']
-    curr_time = datetime.now()
+    if is_form_submitted(request):
+        #If a post has been submitted, add to the database and redirect
+        title = request.form['title']
+        subtitle = request.form['subtitle']
+        slug = request.form['slug']
+        author = request.form['author']
+        content = request.form['content']
+        curr_time = datetime.now()
 
-    new_post = Blogpost(title=title, subtitle=subtitle, slug=slug, author=author, \
-    content=content, date_posted=curr_time)
-    create_post(new_post)
+        new_post = Blogpost(title=title, subtitle=subtitle, slug=slug, author=author, \
+        content=content, date_posted=curr_time)
+        create_post(new_post)
 
-    if "images" in request.files:
-        uploaded_files = request.files.getlist('images')
-        post_id = str(get_post(slug).id)
-        print(post_id)
-        pathlib.Path(UPLOAD_FOLDER, post_id).mkdir(exist_ok=True)
-        for file in uploaded_files:
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(UPLOAD_FOLDER, post_id, filename))
+        #Make REST
+        if "images" in request.files:
+            uploaded_files = request.files.getlist('images')
+            post_id = str(get_post(slug).id)
+            pathlib.Path(UPLOAD_FOLDER, post_id).mkdir(exist_ok=True)
+            for file in uploaded_files:
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(UPLOAD_FOLDER, post_id, filename))
 
-    return redirect(url_for('base.index'))
+        return redirect(
+            url_for('base.index')
+        )
+    else:
+        return render_template(
+            'add.html',
+            form=blogpost_form
+        )
+
 
 """
 EDIT POST
@@ -83,21 +95,36 @@ Edit a post.
 @base.route('/edit/<string:slug>', methods=['POST','GET'])
 @login_required
 def edit(slug):
+    edit_form = BlogpostForm()
+    print(slug)
     post = get_post(slug)
     id = post.id
 
-    if request.method == 'GET':
-        return render_template('edit.html', post=post)
+    if is_form_submitted(request):
+        edit_form = request.form
+        post.title = edit_form['title']
+        post.subtitle = edit_form['subtitle']
+        post.slug = edit_form['slug']
+        post.content = edit_form['content']
+        update_post(id, post)
 
-    #Store the updated post information
-    edit_form = request.form
-    post.title = edit_form['title']
-    post.subtitle = edit_form['subtitle']
-    post.slug = edit_form['slug']
-    post.content = edit_form['content']
+        return redirect(
+            url_for(
+                'base.post',
+                slug=post.slug
+            )
+        )
+    else:
+        edit_form.title.data = post.title
+        edit_form.subtitle.data = post.subtitle
+        edit_form.slug.data = post.slug
+        edit_form.content.data = post.content
 
-    update_post(id, post)
-    return redirect(url_for('base.post',slug=post.slug))
+        return render_template(
+            'edit.html',
+            form=edit_form,
+            post=post
+        )
 
 """
 DELETE POST
@@ -108,12 +135,25 @@ Delete a post from the SQL database.
 def delete(slug):
     post = get_post(slug)
 
-    if request.method == 'GET':
-        return render_template('delete.html', post=post)
+    if is_form_submitted(request):
+        delete_form = request.form
+        delete_post_confirmed = (delete_form['radio-toggle'] == "toggle-yes")
 
-    delete_form = request.form
-    delete_post_confirmed = (delete_form['radio-toggle'] == "toggle-yes")
-    print(delete_post_confirmed)
-    if delete_post_confirmed:
-        delete_post(slug)
-    return redirect(url_for('base.index'))
+        if delete_post_confirmed:
+            delete_post(slug)
+
+        return redirect(
+            url_for('base.index')
+        )
+    else:
+        return render_template(
+            'delete.html',
+            post=post
+        )
+
+"""
+HELPER FUNCTIONS
+Functions that help improve code readability and coherence.
+"""
+def is_form_submitted(request):
+    return request.method == "POST"

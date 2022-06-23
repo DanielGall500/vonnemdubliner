@@ -13,13 +13,15 @@ import pathlib
 GET
 Filters by the slug and returns a post if available.
 """
-def get_post(slug):
-    try:
-        post = Blogpost.query.filter_by(slug=slug).one()
-        return post
-    except:
-        flash("Post with slug {} not found".format(slug))
-        raise
+def get_posts(slug=None,id=None):
+    if slug:
+        return Blogpost.query.filter_by(slug=slug)
+    elif id:
+        return Blogpost.query.filter_by(id=id)
+    return None
+
+def get_post(slug=None, id=None):
+    return get_posts(slug=slug,id=id).one()
 
 """
 CREATE
@@ -35,20 +37,21 @@ DELETE
 Filters by the slug and deletes a post with that slug if available.
 """
 def delete_post(slug):
-    try:
-        #Load post data
-        id = str(get_post(slug).id)
+    post = get_post(slug=slug)
+    if not post:
+        return False
 
-        #Delete post from SQL database
-        Blogpost.query.filter_by(id=id).delete()
-        db.session.commit()
+    id = str(post.id)
+    get_posts(id=id).delete()
+    delete_images(id)
 
-        #Delete all files associated with the post
-        images_path = pathlib.Path(UPLOAD_FOLDER, id)
+    db.session.commit()
+    return True
+
+def delete_images(id):
+    images_path = pathlib.Path(UPLOAD_FOLDER, id)
+    if images_path.is_dir():
         shutil.rmtree(images_path)
-    except:
-        flash("Post with slug {} not found.".format(slug))
-        raise
 
 """
 UPDATE
@@ -60,4 +63,5 @@ def update_post(id, post):
         db.session.add(post)
         db.session.commit()
     except:
-        raise
+        return False
+    return True
