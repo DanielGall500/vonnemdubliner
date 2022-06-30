@@ -27,7 +27,7 @@ def get_post(slug=None, id=None):
 CREATE
 Adds & commits the HTML of a post to the database.
 """
-def create_post(blogpost):
+def add_post(blogpost):
     db.session.add(blogpost)
     db.session.commit()
     return blogpost

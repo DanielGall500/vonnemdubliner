@@ -1,7 +1,15 @@
 from flask import (
-Blueprint, request, jsonify, make_response, render_template, redirect, url_for, flash
+    Blueprint, request, jsonify, make_response, render_template, redirect, \
+    url_for, flash, send_from_directory
+)
+from vonnemdubliner.rest.media import (
+    add_image
+)
+from vonnemdubliner.rest.post import (
+    get_post
 )
 from flask_login import login_user, logout_user, login_required, current_user
+from flask_ckeditor import upload_success, upload_fail
 from werkzeug.security import generate_password_hash, check_password_hash
 from vonnemdubliner.models import db, User, Blogpost
 from werkzeug.utils import secure_filename
@@ -56,3 +64,21 @@ def logout():
     logout_user()
     flash("Logged Out.")
     return redirect(url_for('base.index'))
+
+
+"""
+UPLOAD MEDIA
+Upload files such as images to the website.
+"""
+@auth.route("/files/<path:filename>")
+def uploaded_files(filename):
+    return send_from_directory(UPLOAD_FOLDER, filename)
+
+@auth.route("/upload", methods=['POST'])
+@login_required
+def upload():
+    #Make REST
+    img = request.files.get('upload')
+    #post_id = str(get_post(slug).id)
+    url = add_image(img)
+    return upload_success(url, filename=img.filename)

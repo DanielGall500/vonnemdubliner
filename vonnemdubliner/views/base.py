@@ -2,13 +2,12 @@ from flask import (
     Blueprint, request,  make_response, render_template, redirect, url_for, flash
 )
 from vonnemdubliner.rest.post import (
-    get_post, create_post, delete_post, update_post
+    get_post, add_post, delete_post, update_post
 )
 from vonnemdubliner.models import db, User, Blogpost
 from vonnemdubliner.webforms import BlogpostForm
 from flask_login import login_required
 from datetime import datetime, timedelta
-from werkzeug.utils import secure_filename
 from app import UPLOAD_FOLDER
 import pathlib
 import os
@@ -25,7 +24,7 @@ def index():
     return render_template('index.html', posts=posts)
 
 """
-HOME
+ABOUT
 Simple page to display an intro to the vnD project.
 """
 @base.route('/about')
@@ -67,16 +66,7 @@ def add():
 
         new_post = Blogpost(title=title, subtitle=subtitle, slug=slug, author=author, \
         content=content, date_posted=curr_time)
-        create_post(new_post)
-
-        #Make REST
-        if "images" in request.files:
-            uploaded_files = request.files.getlist('images')
-            post_id = str(get_post(slug).id)
-            pathlib.Path(UPLOAD_FOLDER, post_id).mkdir(exist_ok=True)
-            for file in uploaded_files:
-                filename = secure_filename(file.filename)
-                file.save(os.path.join(UPLOAD_FOLDER, post_id, filename))
+        add_post(new_post)
 
         return redirect(
             url_for('base.index')
@@ -96,7 +86,6 @@ Edit a post.
 @login_required
 def edit(slug):
     edit_form = BlogpostForm()
-    print(slug)
     post = get_post(slug)
     id = post.id
 
