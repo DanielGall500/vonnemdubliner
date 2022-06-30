@@ -1,4 +1,4 @@
-from vonnemdubliner.rest.post import create_post
+from vonnemdubliner.rest.post import add_post
 from vonnemdubliner.models import db, Blogpost
 
 def test_new_post(new_post):
@@ -16,5 +16,5 @@ def test_new_post(new_post):
 
 def test_new_post_in_database(app, new_post):
     with app.app_context():
-        create_post(new_post)
-        assert Blogpost.query.filterby(slug=new_post.slug).count() == 1
+        add_post(new_post)
+        assert Blogpost.query.filter_by(slug=new_post.slug).count() == 1
