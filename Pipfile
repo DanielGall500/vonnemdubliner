@@ -16,6 +16,7 @@ wtforms = "*"
 flask-wtf = "*"
 gunicorn = "*"
 psycopg2 = "*"
+waitress = "*"
 
 [dev-packages]
 
