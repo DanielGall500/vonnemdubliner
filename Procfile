@@ -1,1 +1,1 @@
-gunicorn -w 4 wsgi:app
+gunicorn -w 4 "app:create_app()"
