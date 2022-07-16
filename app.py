@@ -20,6 +20,7 @@ def create_app():
     #Config settings include secret key
     app.config.from_pyfile('config.py')
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+    app.config['CKEDITOR_FILE_UPLOADER'] = 'auth.upload'
 
     from vonnemdubliner.models import db
     migrate = Migrate(app, db, render_as_batch=True)
