@@ -1,4 +1,5 @@
 import os
+import re
 
 SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
 if SQLALCHEMY_DATABASE_URI.startswith("postgres://"):
