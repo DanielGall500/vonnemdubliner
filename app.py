@@ -17,8 +17,10 @@ def create_app():
 
     ckeditor.init_app(app)
 
-    #Config settings include secret key
-    app.config.from_pyfile('config.py')
+    #Secret key and database URI
+    app.config.from_pyfile('config_variables.py')
+
+    #Additional config settings
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     app.config['CKEDITOR_FILE_UPLOADER'] = 'auth.upload'
 
