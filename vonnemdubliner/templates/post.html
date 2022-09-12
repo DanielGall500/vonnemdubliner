@@ -8,9 +8,9 @@
         <div class="row">
           <div class="col-lg-8 col-md-10 mx-auto">
             <div class="post-heading">
-              <h1>{{ post.title }}</h1>
-              <h2 class="subheading">{{ post.subtitle }}</h2>
-              <span class="meta">
+              <h1 class="text-content">{{ post.title }}</h1>
+              <h2 class="subheading text-content">{{ post.subtitle }}</h2>
+              <span class="meta text-content">
                 {{ post.date_posted.strftime('%B %d, %Y') }}</span>
             </div>
           </div>
@@ -24,7 +24,7 @@
     <article>
       <div class="container">
         <div class="row">
-          <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="col-lg-8 col-md-10 mx-auto text-content">
             {{ post.content|safe }}
           </div>
         </div>
