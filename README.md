@@ -1,5 +1,5 @@
-# vonnemdubliner
-['Von nem Dubliner](vonnemdubliner.de) is a web application built to host German-language blog posts on the topic of Dublin city.
+# 'Von nem Dubliner
+vonnemdubliner.de is a web application built to host German-language blog posts on the topic of Dublin city.
 It aims to provide information for those who wish to visit this city from a local who has grown up there.
 
 #### Design
