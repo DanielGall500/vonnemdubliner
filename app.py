@@ -6,7 +6,7 @@ from flask_ckeditor import CKEditor
 
 TEMPLATE_FOLDER = 'vonnemdubliner/templates'
 STATIC_FOLDER = 'vonnemdubliner/static'
-UPLOAD_FOLDER = STATIC_FOLDER + '/uploads'
+UPLOAD_FOLDER = STATIC_FOLDER + '/images/posts'
 
 ckeditor = CKEditor()
 
