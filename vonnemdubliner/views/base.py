@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, request,  make_response, render_template, redirect, url_for, flash
+    Blueprint, request,  make_response, render_template, redirect, url_for, flash, send_from_directory
 )
 from vonnemdubliner.rest.post import (
     get_post, add_post, delete_post, update_post
@@ -43,6 +43,10 @@ def post(slug):
         post=post,
         post_header_img='home-bg.jpg'
     )
+
+@base.route('/images/<path:filename>')
+def static_dir(filename):
+    return send_from_directory(UPLOAD_FOLDER, filename)
 
 """
 ADD POST
